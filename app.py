@@ -113,7 +113,7 @@ def copy_result():
         messagebox.showwarning("Нет данных", "Сначала загрузите и загрузите файл.")
 
 root = tk.Tk()
-root.title("NBS в JustMC с загрузкой на tmpfiles.org")
+root.title("NBS2JMC")
 root.geometry("700x400")
 
 btn_frame = tk.Frame(root)
