@@ -5,8 +5,8 @@ import zlib
 import base64
 import json
 
-result_data = None  # Полный текст
-preview_lines = 5  # Кол-во строк предпросмотра
+result_data = None
+preview_lines = 5
 
 def toModule(base64_str):
     return """{"handlers":[{"type":"function","position":0,"operations":[{"action":"set_variable_create_list","values":[{"name":"values","value":{"type":"array","values":[{},{},{},{},{},{},{},{},{},{},{"type":"item","item":"{count:1,components:{\\"minecraft:custom_data\\":{PublicBukkitValues:{\\"justmc:template\\":%DATA%}}},id:\\"minecraft:ender_chest\\"}"},{},{},{},{},{},{},{},{},{},{}]}},{"name":"variable","value":{}}]}],"values":[],"name":""}]}""".replace(
@@ -58,7 +58,6 @@ def load_file():
         messagebox.showerror("Ошибка", result)
     else:
         result_data = result
-        # Обновить окно предпросмотра (только первые строки)
         preview_box.delete(1.0, tk.END)
         lines = result.splitlines()
         preview = "\n".join(lines[:preview_lines])
@@ -73,7 +72,6 @@ def copy_result():
     else:
         messagebox.showwarning("Нет данных", "Сначала загрузите файл.")
 
-# GUI
 root = tk.Tk()
 root.title("NBS в JustMC")
 root.geometry("700x400")
