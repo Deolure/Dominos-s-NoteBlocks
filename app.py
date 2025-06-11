@@ -90,8 +90,12 @@ def copy_result():
 # GUI
 root = tk.Tk()
 root.title("NBS2JMC")
+<<<<<<< HEAD
 root.geometry("220x230")
 root.resizable(False, False)
+=======
+root.geometry("700x400")
+>>>>>>> 43ccad140157d50b196e225f881ef544f6358790
 
 file_frame = tk.Frame(root)
 file_frame.pack(pady=10)
