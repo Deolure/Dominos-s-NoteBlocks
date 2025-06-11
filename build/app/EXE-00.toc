@@ -66,6 +66,18 @@
    'D:\\Directories by System\\Рабочий '
    'стол\\⠀\\vs-code-projects\\nbs\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_inspect.py',
    'PYSOURCE'),
+  ('pyi_rth_setuptools',
+   'D:\\Directories by System\\Рабочий '
+   'стол\\⠀\\vs-code-projects\\nbs\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_setuptools.py',
+   'PYSOURCE'),
+  ('pyi_rth_pkgutil',
+   'D:\\Directories by System\\Рабочий '
+   'стол\\⠀\\vs-code-projects\\nbs\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_pkgutil.py',
+   'PYSOURCE'),
+  ('pyi_rth_multiprocessing',
+   'D:\\Directories by System\\Рабочий '
+   'стол\\⠀\\vs-code-projects\\nbs\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_multiprocessing.py',
+   'PYSOURCE'),
   ('pyi_rth__tkinter',
    'D:\\Directories by System\\Рабочий '
    'стол\\⠀\\vs-code-projects\\nbs\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth__tkinter.py',
@@ -76,7 +88,7 @@
  [],
  False,
  False,
- 1749647372,
+ 1749658520,
  [('runw.exe',
    'D:\\Directories by System\\Рабочий '
    'стол\\⠀\\vs-code-projects\\nbs\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\runw.exe',

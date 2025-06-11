@@ -4,9 +4,22 @@ import pynbs
 import zlib
 import base64
 import json
+import requests
+import io
 
-result_data = None
-preview_lines = 5
+result_url = None
+preview_lines = 3
+
+def get_direct_download_link(url: str) -> str:
+    # Пример:
+    # "http://tmpfiles.org/1592738/result.json" -> "http://tmpfiles.org/dl/1592738/result.json"
+    if url.startswith("http://tmpfiles.org/"):
+        return url.replace("http://tmpfiles.org/", "http://tmpfiles.org/dl/")
+    elif url.startswith("https://tmpfiles.org/"):
+        return url.replace("https://tmpfiles.org/", "https://tmpfiles.org/dl/")
+    else:
+        return url
+
 
 def toModule(base64_str):
     return """{"handlers":[{"type":"function","position":0,"operations":[{"action":"set_variable_create_list","values":[{"name":"values","value":{"type":"array","values":[{},{},{},{},{},{},{},{},{},{},{"type":"item","item":"{count:1,components:{\\"minecraft:custom_data\\":{PublicBukkitValues:{\\"justmc:template\\":%DATA%}}},id:\\"minecraft:ender_chest\\"}"},{},{},{},{},{},{},{},{},{},{}]}},{"name":"variable","value":{}}]}],"values":[],"name":""}]}""".replace(
@@ -45,35 +58,62 @@ def process_nbs_file(filepath):
     except Exception as e:
         return f"Ошибка: {e}"
 
+def upload_to_tmpfiles(content: str):
+    try:
+        files = {
+            'file': ('result.json', content.encode('utf-8'))
+        }
+        response = requests.post('https://tmpfiles.org/api/v1/upload', files=files)
+        response.raise_for_status()
+        data = response.json()
+
+        if data.get('status') == 'success' and 'data' in data and 'url' in data['data']:
+            url = data['data']['url']
+            direct_url = get_direct_download_link(url)
+            return direct_url
+        else:
+            print("Ошибка в ответе API:", data)
+            return None
+    except Exception as e:
+        print("Исключение при загрузке:", e)
+        return None
+
 def load_file():
-    global result_data
+    global result_url
     filepath = filedialog.askopenfilename(filetypes=[("Note Block Studio Files", "*.nbs")])
     if not filepath:
         return
 
     result = process_nbs_file(filepath)
     if result.startswith("Ошибка"):
-        result_data = None
+        result_url = None
         preview_box.delete(1.0, tk.END)
         messagebox.showerror("Ошибка", result)
-    else:
-        result_data = result
+        return
+
+    url = upload_to_tmpfiles(result)
+    if not url:
+        messagebox.showerror("Ошибка", "Не удалось загрузить результат на tmpfiles.org")
+        result_url = None
         preview_box.delete(1.0, tk.END)
-        lines = result.splitlines()
-        preview = "\n".join(lines[:preview_lines])
-        preview_box.insert(tk.END, preview + ("\n..." if len(lines) > preview_lines else ""))
-        messagebox.showinfo("Успешно", "Файл загружен. Предпросмотр обновлён.")
+        return
+
+    result_url = url
+    preview_box.delete(1.0, tk.END)
+    preview_box.insert(tk.END, f"Файл загружен и доступен для загрузки в течении 60 минут.\nСсылка {url}")
+
+    messagebox.showinfo("Успешно", "Файл обработан и загружен. Ссылка доступна ниже.")
 
 def copy_result():
-    if result_data:
+    if result_url:
         root.clipboard_clear()
-        root.clipboard_append(result_data)
-        messagebox.showinfo("Скопировано", "Полный результат скопирован в буфер обмена.")
+        root.clipboard_append(result_url)
+        messagebox.showinfo("Скопировано", "Ссылка на результат скопирована в буфер обмена.")
     else:
-        messagebox.showwarning("Нет данных", "Сначала загрузите файл.")
+        messagebox.showwarning("Нет данных", "Сначала загрузите и загрузите файл.")
 
 root = tk.Tk()
-root.title("NBS в JustMC")
+root.title("NBS в JustMC с загрузкой на tmpfiles.org")
 root.geometry("700x400")
 
 btn_frame = tk.Frame(root)
@@ -82,7 +122,7 @@ btn_frame.pack(pady=10)
 load_btn = tk.Button(btn_frame, text="Загрузить .nbs", command=load_file, width=20)
 load_btn.pack(side=tk.LEFT, padx=5)
 
-copy_btn = tk.Button(btn_frame, text="Скопировать результат", command=copy_result, width=20)
+copy_btn = tk.Button(btn_frame, text="Скопировать ссылку", command=copy_result, width=20)
 copy_btn.pack(side=tk.LEFT, padx=5)
 
 preview_box = tk.Text(root, height=15, wrap=tk.WORD)
