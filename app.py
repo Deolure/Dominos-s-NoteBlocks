@@ -6,6 +6,7 @@ import base64
 import json
 import requests
 
+data_text = None
 result_url = None
 
 def get_direct_download_link(url: str) -> str:
@@ -67,6 +68,7 @@ def load_file():
     if result.startswith("Ошибка"):
         result_url = None
         preview_label.config(text="")
+        command_entry.delete(0, tk.END)
         messagebox.showerror("Ошибка", result)
         return
 
@@ -74,28 +76,28 @@ def load_file():
     if not url:
         result_url = None
         preview_label.config(text="")
+        command_entry.delete(0, tk.END)
         messagebox.showerror("Ошибка", "Не удалось загрузить файл.")
         return
 
     result_url = url
     preview_label.config(text=f"Ссылка: {url}")
+    command_entry.delete(0, tk.END)
+    command_entry.insert(0, f"/module loadUrl {url}")
 
 def copy_result():
-    if result_url:
+    command = command_entry.get()
+    if command:
         root.clipboard_clear()
-        root.clipboard_append(result_url)
+        root.clipboard_append(command)
     else:
-        messagebox.showwarning("Нет данных", "Сначала выберите и загрузите файл.")
+        messagebox.showwarning("Нет команды", "Сначала выберите и загрузите файл.")
 
 # GUI
 root = tk.Tk()
 root.title("NBS2JMC")
-<<<<<<< HEAD
-root.geometry("220x230")
+root.geometry("300x250")
 root.resizable(False, False)
-=======
-root.geometry("700x400")
->>>>>>> 43ccad140157d50b196e225f881ef544f6358790
 
 file_frame = tk.Frame(root)
 file_frame.pack(pady=10)
@@ -103,8 +105,11 @@ file_frame.pack(pady=10)
 tk.Label(file_frame, text="Выберите файл").grid(row=0, column=0, padx=5)
 tk.Button(file_frame, text="Обзор", command=load_file).grid(row=0, column=1)
 
-preview_label = tk.Label(root, text="", wraplength=200, justify=tk.LEFT)
-preview_label.pack(padx=10, pady=20)
+preview_label = tk.Label(root, text="", wraplength=280, justify=tk.LEFT)
+preview_label.pack(padx=10, pady=5)
+
+command_entry = tk.Entry(root, width=40)
+command_entry.pack(pady=5)
 
 tk.Button(root, text="Скопировать команду", command=copy_result).pack(pady=10)
 
